@@ -73440,7 +73440,7 @@ function (_Component) {
             return _this.props.deleteCategory(category.id);
           }
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          "class": "fas fa-times"
+          className: "fas fa-times"
         })))));
       }))));
     }

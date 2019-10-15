@@ -46,7 +46,7 @@ class CategoryList extends Component {
                                       <button className="btn btn-danger"
                                             onClick={() => this.props.deleteCategory(category.id)}
                                             >
-                                            <i class="fas fa-times"></i>
+                                            <i className="fas fa-times"></i>
                                         </button>
                                     </span>
                                     
