@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import axios from "axios";
 class AddCategory extends Component {
 
     constructor(props) {
@@ -17,17 +17,25 @@ class AddCategory extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        console.log(this.state);
+        this.props.addCategory(this.state);
+        
+        this.setState({
+            category: ''
+        })
     }
     render() {
         return (
-            <div className="col-md-6">
+            <div>
                 <form onSubmit={this.handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="category">Password</label>
-                        <input type="password" className="form-control" id="category" 
-                                placeholder="Password" 
+                        <label htmlFor="category">Add new category</label>
+                        <input type="text" className="form-control" id="category" 
+                                placeholder="Category name"
+                                value={this.state.category}
                                 onChange={this.handleChange}/>
+                    </div>
+                    <div className="form-group">
+                        <button className="btn btn-primary float-right">Add</button>
                     </div>
                 </form>
             </div>

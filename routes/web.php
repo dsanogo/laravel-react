@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('categories', 'Api\CategoriesController@index')->name('categories.name');
+Route::post('categories', 'Api\CategoriesController@store')->name('categories.store');
+Route::patch('categories/{category}', 'Api\CategoriesController@update')->name('category.update');
+Route::delete('categories/{category}', 'Api\CategoriesController@destroy')->name('category.delete');

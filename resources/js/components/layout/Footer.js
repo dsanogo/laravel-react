@@ -5,7 +5,8 @@ class Footer extends Component {
         return (
             <div className="card">
                 <div className="card-header">
-                    <p>i am the footer</p>
+
+                    <p style={{textAlign: 'center'}}>Copyright &copy; SMARTI'M 2019</p>
                    
                 </div>
             </div>
