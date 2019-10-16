@@ -7,7 +7,8 @@ class Category extends Component {
     constructor(props) {
         super(props)
         this.state = {
-        categories: []
+            categories: [],
+            validationErrors: []
         }
     }
 
@@ -22,7 +23,7 @@ class Category extends Component {
               categories: res.data.data
             });
           }).catch(err => {
-            console.log('Oops couldn\' fetch data: ', err);
+            console.log('Oops couldn\' fetch data: ', err.errors);
         })
     }
 
@@ -30,10 +31,20 @@ class Category extends Component {
         const url = 'http://localhost:8000/categories';
         axios.post(url, category).then(res => {
             this.setState({
-                categories: [res.data.category, ...this.state.categories]
+                categories: [res.data.category, ...this.state.categories],
+                validationErrors: []
             })
         }).catch(err => {
-            console.log('Oops, something went wrong: ', err)
+            this.setState({
+                validationErrors: []
+            });
+            
+            const {errors} = err.response.data;
+            Object.keys(errors).forEach(error => {
+                this.setState({
+                    validationErrors: [...this.state.validationErrors, errors[error]]
+                })
+            });
         })
     }
 
@@ -63,7 +74,8 @@ class Category extends Component {
                     changeStatus={this.changeStatus}
                     deleteCategory={this.deleteCategory}
                     />
-                <AddCategory addCategory={this.addCategory}/>
+                <AddCategory addCategory={this.addCategory}
+                            errors={this.state.validationErrors}/>
             </div>
         )
     }

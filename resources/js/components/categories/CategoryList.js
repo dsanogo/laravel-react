@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import axios from "axios";
+import React, { Component } from 'react';
+import { Link } from "react-router-dom";
 class CategoryList extends Component {
 
     render() {
@@ -9,8 +9,8 @@ class CategoryList extends Component {
                 <h4>Categories list</h4>
                 <table className="table">
                   <thead className="thead-dark">
-                    <tr>
-                    <th scope="col">#</th>
+                    <tr style={{textAlign: 'center'}}>
+                      <th scope="col">#</th>
                       <th scope="col">Category</th>
                       <th scope="col">Status</th>
                       <th scope="col">Created at</th>
@@ -34,7 +34,14 @@ class CategoryList extends Component {
                                 <td>{category.active == 1 ? <i className="fas fa-lock-open" title="Enabled"></i> : <i className="fas fa-lock" title="Disabled"></i>}</td>
                                 <td>{category.created_at}</td>
                                 <td>{category.updated_at}</td>
-                                <td>
+                                <td style={{width: '165px'}}>
+                                  <span>
+                                      <button className="btn">
+                                          <Link to={'/categories/'+ category.id + '/edit'}
+                                            style={{color:'black'}}
+                                          ><i className="fas fa-pencil-alt"></i></Link>
+                                      </button>
+                                    </span>
                                     <span>
                                       <button className={className}
                                         onClick={() => this.props.changeStatus(category.id)}

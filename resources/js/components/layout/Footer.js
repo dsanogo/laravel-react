@@ -6,7 +6,8 @@ class Footer extends Component {
             <div className="card">
                 <div className="card-header">
 
-                    <p style={{textAlign: 'center'}}>Copyright &copy; SMARTI'M 2019</p>
+                    <p style={{textAlign: 'center'}}>Copyright &copy; SMARTI'M 2019 - 
+                    All Rights Reserved</p>
                    
                 </div>
             </div>

@@ -7,6 +7,7 @@ import Home from './web/Home';
 import About from './web/About';
 import Contact from './web/Contact';
 import Category from './categories/Index';
+import Editcategory from './categories/Editcategory';
 
 export default class App extends Component {
     render() {
@@ -19,6 +20,7 @@ export default class App extends Component {
                             <Switch>
                                 <Route path='/' exact component={Home}/>
                                 <Route path='/categories' exact component={Category}/>
+                                <Route path='/categories/:id/edit' component={Editcategory}/>
                                 <Route path='/about' component={About}/>
                                 <Route path='/contact-us' component={Contact}/>
                             </Switch>

@@ -17,5 +17,7 @@ Route::get('/', function () {
 
 Route::get('categories', 'Api\CategoriesController@index')->name('categories.name');
 Route::post('categories', 'Api\CategoriesController@store')->name('categories.store');
+Route::get('categories/{category}/edit', 'Api\CategoriesController@edit')->name('category.edit');
+Route::put('categories/{category}/edit', 'Api\CategoriesController@updayeName')->name('category.update.name');
 Route::patch('categories/{category}', 'Api\CategoriesController@update')->name('category.update');
 Route::delete('categories/{category}', 'Api\CategoriesController@destroy')->name('category.delete');

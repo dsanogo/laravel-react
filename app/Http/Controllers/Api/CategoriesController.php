@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class CategoriesController extends Controller
 {
@@ -39,12 +40,16 @@ class CategoriesController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->validateRequest($request);
+            $validated = $this->validateRequest($request);
 
-            $category = Category::create([
-                'name' => $request->category
-            ]);
-            return response()->json(['status' => 'success', 'category' => $category], 200);
+            if($validated->fails()){
+                return response()->json(['status' => 'error', 'errors'=> $validated->errors()], 422);
+            }else {
+                $category = Category::create([
+                    'name' => $request->category
+                ]);
+                return response()->json(['status' => 'success', 'category' => $category], 200);
+            }
 
         } catch (\Exception $ex) {
             return response()->json(['status' => 'error', 'message' => $ex->getMessage()()], 200);
@@ -70,7 +75,7 @@ class CategoriesController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        return response()->json(['status' => 'success', 'data' => $category], 200);
     }
 
     /**
@@ -108,10 +113,19 @@ class CategoriesController extends Controller
         }
     }
 
+    public function updayeName(Request $request, Category $category)
+    {
+        $category->update([
+            'name' => $request->name
+        ]);
+
+        return response()->json(['status' => 'success', 'message' => 'updated'], 200);
+    }
+
     private function validateRequest($request)
     {
-        return $request->validate([
-            'category' => 'required|string|min:5'
+        return Validator::make($request->all(), [
+            'category' => 'required|string|min:3'
         ]);
     }
 }
