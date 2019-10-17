@@ -73410,12 +73410,15 @@ function (_Component) {
         component: _categories_Index__WEBPACK_IMPORTED_MODULE_8__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/categories/:id/edit",
+        exact: true,
         component: _categories_Editcategory__WEBPACK_IMPORTED_MODULE_9__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/about",
+        exact: true,
         component: _web_About__WEBPACK_IMPORTED_MODULE_6__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/contact-us",
+        exact: true,
         component: _web_Contact__WEBPACK_IMPORTED_MODULE_7__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/*",
@@ -73599,8 +73602,6 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CategoryList).call(this, props));
 
     _this.handlePageChange = function (pageNumber) {
-      console.log("Active page is now ".concat(pageNumber));
-
       _this.props.paginate(pageNumber);
     };
 
@@ -73693,14 +73694,14 @@ function (_Component) {
         })))));
       }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "d-flex justify-content-center"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_js_pagination__WEBPACK_IMPORTED_MODULE_2___default.a, {
+      }, categories.length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_js_pagination__WEBPACK_IMPORTED_MODULE_2___default.a, {
         activePage: activePage,
         itemsCountPerPage: itemsCountPerPage,
         totalItemsCount: totalItemsCount,
         onChange: this.handlePageChange,
         itemClass: "page-item",
         linkClass: "page-link"
-      })));
+      }) : null));
     }
   }]);
 
@@ -73962,8 +73963,6 @@ function (_Component) {
 
     _this.paginate = function (pageNumber) {
       axios.get("http://localhost:8000/api/categories?page=".concat(pageNumber)).then(function (res) {
-        console.log(res.data);
-
         _this.setState({
           categories: res.data.data.data,
           activePage: res.data.data.current_page,

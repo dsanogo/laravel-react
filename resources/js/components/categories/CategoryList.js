@@ -13,7 +13,6 @@ class CategoryList extends Component {
   }
   
   handlePageChange = (pageNumber) => {
-    console.log(`Active page is now ${pageNumber}`);
     this.props.paginate(pageNumber);
   }
 
@@ -82,7 +81,8 @@ class CategoryList extends Component {
                   </tbody>
               </table>
               <div className="d-flex justify-content-center">
-                <Pagination 
+                {categories.length ? (
+                    <Pagination 
                     activePage={activePage}
                     itemsCountPerPage={itemsCountPerPage}
                     totalItemsCount={totalItemsCount}
@@ -90,6 +90,8 @@ class CategoryList extends Component {
                     itemClass="page-item"
                     linkClass="page-link"
                   />
+                ): null}
+                
               </div>
             </div>
         )

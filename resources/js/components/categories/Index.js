@@ -92,7 +92,6 @@ const {errors} = err.response.data;
     paginate = (pageNumber) => {
         axios.get(`http://localhost:8000/api/categories?page=${pageNumber}`)
         .then(res => {
-            console.log(res.data)
             this.setState({
                 categories: res.data.data.data,
                 activePage: res.data.data.current_page,
@@ -101,7 +100,7 @@ const {errors} = err.response.data;
             })
         })
         .catch(err => {
-        console.log('Error => ', err);
+            console.log('Error => ', err);
         })
     }
 

@@ -21,9 +21,9 @@ export default class App extends Component {
                             <Switch>
                                 <Route path='/' exact component={Home}/>
                                 <Route path='/categories' exact component={Category}/>
-                                <Route path='/categories/:id/edit' component={Editcategory}/>
-                                <Route path='/about' component={About}/>
-                                <Route path='/contact-us' component={Contact}/>
+                                <Route path='/categories/:id/edit' exact component={Editcategory}/>
+                                <Route path='/about' exact component={About}/>
+                                <Route path='/contact-us' exact component={Contact}/>
                                 <Route path='/*' component={Error404}/>
                             </Switch>
                         </div>
