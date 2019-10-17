@@ -6366,6 +6366,68 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/classnames/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/classnames/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ( true && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}());
+
+
+/***/ }),
+
 /***/ "./node_modules/gud/index.js":
 /*!***********************************!*\
   !*** ./node_modules/gud/index.js ***!
@@ -35488,6 +35550,105 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	}
 
 	return to;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/paginator/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/paginator/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = Paginator;
+
+// Paginator constructor
+//
+// `per_page` is the number of results per page, `length` is the number of
+// pages to display. They default to `25` and `10` respectively.
+function Paginator(per_page, length) {
+  // You really should be calling this with `new Paginator`, but WHATEVER.
+  if (!(this instanceof Paginator)) {
+    return new Paginator(per_page, length);
+  }
+
+  // Woo, defaults!
+  this.per_page = per_page || 25;
+  this.length = length || 10;
+}
+
+// Build an object with all the necessary information for outputting pagination
+// controls.
+//
+// (new Paginator(paginator.build(100, 2)
+Paginator.prototype.build = function(total_results, current_page) {
+  // We want the number of pages, rounded up to the nearest page.
+  var total_pages = Math.ceil(total_results / this.per_page);
+
+  // Ensure both total_results and current_page are treated as Numbers
+  total_results = parseInt(total_results, 10);
+  current_page  = parseInt(current_page, 10) || 1;
+
+  // Obviously we can't be on a negative or 0 page.
+  if (current_page < 1) { current_page = 1; }
+  // If the user has done something like /page/99999 we want to clamp that back
+  // down.
+  if (current_page > total_pages) { current_page = total_pages; }
+
+  // This is the first page to be displayed as a numbered link.
+  var first_page = Math.max(1, current_page - Math.floor(this.length / 2));
+
+  // And here's the last page to be displayed specifically.
+  var last_page = Math.min(total_pages, current_page + Math.floor(this.length / 2));
+
+  // This is triggered if we're at or near one of the extremes; we won't have
+  // enough page links. We need to adjust our bounds accordingly.
+  if (last_page - first_page + 1 < this.length) {
+    if (current_page < (total_pages / 2)) {
+      last_page = Math.min(total_pages, last_page + (this.length - (last_page - first_page)));
+    } else {
+      first_page = Math.max(1, first_page - (this.length - (last_page - first_page)));
+    }
+  }
+
+  // This can be triggered if the user wants an odd number of pages.
+  if (last_page - first_page + 1 > this.length) {
+    // We want to move towards whatever extreme we're closest to at the time.
+    if (current_page > (total_pages / 2)) {
+      first_page++;
+    } else {
+      last_page--;
+    }
+  }
+
+  // First result on the page. This, along with the field below, can be used to
+  // do "showing x to y of z results" style things.
+  var first_result = this.per_page * (current_page - 1);
+  if (first_result < 0) { first_result = 0; }
+
+  // Last result on the page.
+  var last_result = (this.per_page * current_page) - 1;
+  if (last_result < 0) { last_result = 0; }
+  if (last_result > Math.max(total_results - 1, 0)) { last_result = Math.max(total_results - 1, 0); }
+
+  // GIMME THAT OBJECT
+  return {
+    total_pages: total_pages,
+    pages: Math.min(last_page - first_page + 1, total_pages),
+    current_page: current_page,
+    first_page: first_page,
+    last_page: last_page,
+    previous_page: current_page - 1,
+    next_page: current_page + 1,
+    has_previous_page: current_page > 1,
+    has_next_page: current_page < total_pages,
+    total_results: total_results,
+    results: Math.min(last_result - first_result + 1, total_results),
+    first_result: first_result,
+    last_result: last_result,
+  };
 };
 
 
@@ -67321,6 +67482,30 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/react-js-pagination/dist/Page.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/react-js-pagination/dist/Page.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports,"__esModule",{value:!0});var _createClass=function(){function e(e,t){for(var r=0;r<t.length;r++){var a=t[r];a.enumerable=a.enumerable||!1,a.configurable=!0,"value"in a&&(a.writable=!0),Object.defineProperty(e,a.key,a)}}return function(t,r,a){return r&&e(t.prototype,r),a&&e(t,a),t}}(),_react=__webpack_require__(/*! react */ "./node_modules/react/index.js"),_react2=_interopRequireDefault(_react),_propTypes=__webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js"),_propTypes2=_interopRequireDefault(_propTypes),_classnames=__webpack_require__(/*! classnames */ "./node_modules/classnames/index.js"),_classnames2=_interopRequireDefault(_classnames);function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function _defineProperty(e,t,r){return t in e?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r,e}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}var Page=function(e){function t(){return _classCallCheck(this,t),_possibleConstructorReturn(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return _inherits(t,_react.Component),_createClass(t,[{key:"handleClick",value:function(e){var t=this.props,r=t.isDisabled,a=t.pageNumber;e.preventDefault(),r||this.props.onClick(a)}},{key:"render",value:function(){var e,t=this.props,r=t.pageText,a=(t.pageNumber,t.activeClass),n=t.itemClass,s=t.linkClass,i=t.activeLinkClass,o=t.disabledClass,l=t.isActive,c=t.isDisabled,u=t.href,p=(0,_classnames2.default)(n,(_defineProperty(e={},a,l),_defineProperty(e,o,c),e)),f=(0,_classnames2.default)(s,_defineProperty({},i,l));return _react2.default.createElement("li",{className:p,onClick:this.handleClick.bind(this)},_react2.default.createElement("a",{className:f,href:u},r))}}]),t}();Page.defaultProps={activeClass:"active",disabledClass:"disabled",itemClass:void 0,linkClass:void 0,activeLinkCLass:void 0,isActive:!1,isDisabled:!1,href:"#"},exports.default=Page;
+
+/***/ }),
+
+/***/ "./node_modules/react-js-pagination/dist/Pagination.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/react-js-pagination/dist/Pagination.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports,"__esModule",{value:!0});var _createClass=function(){function e(e,a){for(var t=0;t<a.length;t++){var s=a[t];s.enumerable=s.enumerable||!1,s.configurable=!0,"value"in s&&(s.writable=!0),Object.defineProperty(e,s.key,s)}}return function(a,t,s){return t&&e(a.prototype,t),s&&e(a,s),a}}(),_react=__webpack_require__(/*! react */ "./node_modules/react/index.js"),_react2=_interopRequireDefault(_react),_propTypes=__webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js"),_propTypes2=_interopRequireDefault(_propTypes),_paginator=__webpack_require__(/*! paginator */ "./node_modules/paginator/index.js"),_paginator2=_interopRequireDefault(_paginator),_Page=__webpack_require__(/*! ./Page */ "./node_modules/react-js-pagination/dist/Page.js"),_Page2=_interopRequireDefault(_Page),_classnames=__webpack_require__(/*! classnames */ "./node_modules/classnames/index.js"),_classnames2=_interopRequireDefault(_classnames);function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function _classCallCheck(e,a){if(!(e instanceof a))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,a){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!a||"object"!=typeof a&&"function"!=typeof a?e:a}function _inherits(e,a){if("function"!=typeof a&&null!==a)throw new TypeError("Super expression must either be null or a function, not "+typeof a);e.prototype=Object.create(a&&a.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),a&&(Object.setPrototypeOf?Object.setPrototypeOf(e,a):e.__proto__=a)}var Pagination=function(e){function a(){return _classCallCheck(this,a),_possibleConstructorReturn(this,(a.__proto__||Object.getPrototypeOf(a)).apply(this,arguments))}return _inherits(a,_react2.default.Component),_createClass(a,[{key:"isFirstPageVisible",value:function(e){var a=this.props,t=a.hideDisabled;a.hideNavigation;return!(a.hideFirstLastPages||t&&!e)}},{key:"isPrevPageVisible",value:function(e){var a=this.props,t=a.hideDisabled;return!(a.hideNavigation||t&&!e)}},{key:"isNextPageVisible",value:function(e){var a=this.props,t=a.hideDisabled;return!(a.hideNavigation||t&&!e)}},{key:"isLastPageVisible",value:function(e){var a=this.props,t=a.hideDisabled;a.hideNavigation;return!(a.hideFirstLastPages||t&&!e)}},{key:"buildPages",value:function(){for(var e=[],a=this.props,t=a.itemsCountPerPage,s=a.pageRangeDisplayed,i=a.activePage,r=a.prevPageText,l=a.nextPageText,n=a.firstPageText,u=a.lastPageText,o=a.totalItemsCount,p=a.onChange,c=a.activeClass,g=a.itemClass,_=a.itemClassFirst,f=a.itemClassPrev,d=a.itemClassNext,h=a.itemClassLast,C=a.activeLinkClass,P=a.disabledClass,b=(a.hideDisabled,a.hideNavigation,a.linkClass),v=a.linkClassFirst,m=a.linkClassPrev,k=a.linkClassNext,y=a.linkClassLast,x=(a.hideFirstLastPages,a.getPageUrl),T=new _paginator2.default(t,s).build(o,i),D=T.first_page;D<=T.last_page;D++)e.push(_react2.default.createElement(_Page2.default,{isActive:D===i,key:D,href:x(D),pageNumber:D,pageText:D+"",onClick:p,itemClass:g,linkClass:b,activeClass:c,activeLinkClass:C}));return this.isPrevPageVisible(T.has_previous_page)&&e.unshift(_react2.default.createElement(_Page2.default,{key:"prev"+T.previous_page,pageNumber:T.previous_page,onClick:p,pageText:r,isDisabled:!T.has_previous_page,itemClass:(0,_classnames2.default)(g,f),linkClass:(0,_classnames2.default)(b,m),disabledClass:P})),this.isFirstPageVisible(T.has_previous_page)&&e.unshift(_react2.default.createElement(_Page2.default,{key:"first",pageNumber:1,onClick:p,pageText:n,isDisabled:!T.has_previous_page,itemClass:(0,_classnames2.default)(g,_),linkClass:(0,_classnames2.default)(b,v),disabledClass:P})),this.isNextPageVisible(T.has_next_page)&&e.push(_react2.default.createElement(_Page2.default,{key:"next"+T.next_page,pageNumber:T.next_page,onClick:p,pageText:l,isDisabled:!T.has_next_page,itemClass:(0,_classnames2.default)(g,d),linkClass:(0,_classnames2.default)(b,k),disabledClass:P})),this.isLastPageVisible(T.has_next_page)&&e.push(_react2.default.createElement(_Page2.default,{key:"last",pageNumber:T.total_pages,onClick:p,pageText:u,isDisabled:T.current_page===T.total_pages,itemClass:(0,_classnames2.default)(g,h),linkClass:(0,_classnames2.default)(b,y),disabledClass:P})),e}},{key:"render",value:function(){var e=this.buildPages();return _react2.default.createElement("ul",{className:this.props.innerClass},e)}}]),a}();Pagination.defaultProps={itemsCountPerPage:10,pageRangeDisplayed:5,activePage:1,prevPageText:"⟨",firstPageText:"«",nextPageText:"⟩",lastPageText:"»",innerClass:"pagination",itemClass:void 0,linkClass:void 0,activeLinkClass:void 0,hideFirstLastPages:!1,getPageUrl:function(e){return"#"}},exports.default=Pagination;
+
+/***/ }),
+
 /***/ "./node_modules/react-router-dom/esm/react-router-dom.js":
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
@@ -73164,6 +73349,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _web_Contact__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./web/Contact */ "./resources/js/components/web/Contact.js");
 /* harmony import */ var _categories_Index__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./categories/Index */ "./resources/js/components/categories/Index.js");
 /* harmony import */ var _categories_Editcategory__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./categories/Editcategory */ "./resources/js/components/categories/Editcategory.js");
+/* harmony import */ var _web_Error404__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./web/Error404 */ "./resources/js/components/web/Error404.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -73181,6 +73367,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -73230,6 +73417,9 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/contact-us",
         component: _web_Contact__WEBPACK_IMPORTED_MODULE_7__["default"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+        path: "/*",
+        component: _web_Error404__WEBPACK_IMPORTED_MODULE_10__["default"]
       })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layout_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
     }
   }]);
@@ -73312,11 +73502,10 @@ function (_Component) {
     };
 
     _this.displayErrors = function () {
-      return _this.props.errors.length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "alert alert-danger"
-      }, _this.props.errors.map(function (error) {
+      return _this.props.errors.length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, _this.props.errors.map(function (error) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-          key: error
+          key: error,
+          className: "alert alert-danger"
         }, error);
       })) : null;
     };
@@ -73371,6 +73560,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var react_js_pagination__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-js-pagination */ "./node_modules/react-js-pagination/dist/Pagination.js");
+/* harmony import */ var react_js_pagination__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_js_pagination__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _layout_Success__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/Success */ "./resources/js/components/layout/Success.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -73392,24 +73584,45 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+
 var CategoryList =
 /*#__PURE__*/
 function (_Component) {
   _inherits(CategoryList, _Component);
 
-  function CategoryList() {
+  function CategoryList(props) {
+    var _this;
+
     _classCallCheck(this, CategoryList);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(CategoryList).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(CategoryList).call(this, props));
+
+    _this.handlePageChange = function (pageNumber) {
+      console.log("Active page is now ".concat(pageNumber));
+
+      _this.props.paginate(pageNumber);
+    };
+
+    _this.state = {
+      activePage: _this.props.pagination.activePage ? _this.props.pagination.activePage : 1
+    };
+    return _this;
   }
 
   _createClass(CategoryList, [{
     key: "render",
     value: function render() {
-      var _this = this;
+      var _this2 = this;
 
       var categories = this.props.categories;
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Categories list"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+      var _this$props$paginatio = this.props.pagination,
+          activePage = _this$props$paginatio.activePage,
+          itemsCountPerPage = _this$props$paginatio.itemsCountPerPage,
+          totalItemsCount = _this$props$paginatio.totalItemsCount;
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Categories list"), this.props.success && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layout_Success__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        message: this.props.success
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
         className: "table"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", {
         className: "thead-dark"
@@ -73462,7 +73675,7 @@ function (_Component) {
         })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           className: className,
           onClick: function onClick() {
-            return _this.props.changeStatus(category.id);
+            return _this2.props.changeStatus(category.id);
           }
         }, category.active ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
           className: "fas fa-lock",
@@ -73473,12 +73686,21 @@ function (_Component) {
         }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           className: "btn btn-danger",
           onClick: function onClick() {
-            return _this.props.deleteCategory(category.id);
+            return _this2.props.deleteCategory(category.id);
           }
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
           className: "fas fa-times"
         })))));
-      }))));
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "d-flex justify-content-center"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_js_pagination__WEBPACK_IMPORTED_MODULE_2___default.a, {
+        activePage: activePage,
+        itemsCountPerPage: itemsCountPerPage,
+        totalItemsCount: totalItemsCount,
+        onChange: this.handlePageChange,
+        itemClass: "page-item",
+        linkClass: "page-link"
+      })));
     }
   }]);
 
@@ -73503,6 +73725,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -73537,34 +73761,35 @@ function (_Component) {
 
     _this.componentDidMount = function () {
       var id = _this.props.match.params.id;
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("http://localhost:8000/categories/".concat(id, "/edit")).then(function (res) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("http://localhost:8000/api/categories/".concat(id, "/edit")).then(function (res) {
         _this.setState({
-          id: res.data.data.id,
           name: res.data.data.name
         });
-      })["catch"](function (err) {});
+      })["catch"](function (err) {
+        console.log('error => ', err);
+      });
     };
 
     _this.handleChange = function (e) {
-      _this.setState({
-        name: e.target.value
-      });
+      _this.setState(_defineProperty({}, e.target.id, e.target.value));
     };
 
     _this.handleSubmit = function (e) {
       e.preventDefault();
 
       if (_this.state.name !== '') {
-        axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("http://localhost:8000/categories/".concat(_this.state.id, "/edit"), _this.state).then(function (res) {
+        var id = _this.props.match.params.id;
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.patch("http://localhost:8000/api/categories/".concat(id), _this.state).then(function (res) {
           if (res.status === 200) {
             _this.props.history.push('/categories');
           }
-        })["catch"](function (err) {});
+        })["catch"](function (err) {
+          console.log("An error occured: ", err);
+        });
       }
     };
 
     _this.state = {
-      id: '',
       name: _this.props.category
     };
     return _this;
@@ -73580,11 +73805,11 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
-        htmlFor: "category"
-      }, "Edit Category - ", this.state.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        htmlFor: "name"
+      }, "Edit name - ", this.state.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "text",
         className: "form-control",
-        id: "category",
+        id: "name",
         placeholder: "Category name",
         value: this.state.name,
         onChange: this.handleChange,
@@ -73664,10 +73889,13 @@ function (_Component) {
     };
 
     _this.getCategories = function () {
-      var url = 'http://localhost:8000/categories';
+      var url = 'http://localhost:8000/api/categories';
       axios.get(url).then(function (res) {
         _this.setState({
-          categories: res.data.data
+          categories: res.data.data.data,
+          activePage: res.data.data.current_page,
+          itemsCountPerPage: res.data.data.per_page,
+          totalItemsCount: res.data.data.total
         });
       })["catch"](function (err) {
         console.log('Oops couldn\' fetch data: ', err.errors);
@@ -73675,47 +73903,98 @@ function (_Component) {
     };
 
     _this.addCategory = function (category) {
-      var url = 'http://localhost:8000/categories';
+      var url = 'http://localhost:8000/api/categories';
       axios.post(url, category).then(function (res) {
+        _this.getCategories();
+
         _this.setState({
-          categories: [res.data.category].concat(_toConsumableArray(_this.state.categories)),
           validationErrors: []
         });
+
+        _this.flashSuccess('Successfully inserted');
       })["catch"](function (err) {
         _this.setState({
           validationErrors: []
         });
 
-        var errors = err.response.data.errors;
-        Object.keys(errors).forEach(function (error) {
-          _this.setState({
-            validationErrors: [].concat(_toConsumableArray(_this.state.validationErrors), [errors[error]])
-          });
-        });
+        if (err.response) {
+          var errors = err.response.data.errors;
+
+          _this.flashErrors(errors);
+        }
       });
     };
 
+    _this.flashErrors = function (errors) {
+      Object.keys(errors).forEach(function (error) {
+        _this.setState({
+          validationErrors: [].concat(_toConsumableArray(_this.state.validationErrors), [errors[error]])
+        });
+      });
+      setTimeout(function () {
+        _this.setState({
+          validationErrors: []
+        });
+      }, 2000);
+    };
+
     _this.changeStatus = function (id) {
-      var url = "http://localhost:8000/categories/".concat(id);
+      var url = "http://localhost:8000/api/categories/".concat(id);
       axios.patch(url).then(function (res) {
         _this.getCategories();
+
+        _this.flashSuccess('Successfully updated');
       })["catch"](function (err) {
         console.log('Oops, something went wrong: ', err);
       });
     };
 
     _this.deleteCategory = function (id) {
-      var url = "http://localhost:8000/categories/".concat(id);
+      var url = "http://localhost:8000/api/categories/".concat(id);
       axios["delete"](url).then(function (res) {
         _this.getCategories();
+
+        _this.flashSuccess('Successfully deleted');
       })["catch"](function (err) {
         console.log('Oops, something went wrong: ', err);
       });
     };
 
+    _this.paginate = function (pageNumber) {
+      axios.get("http://localhost:8000/api/categories?page=".concat(pageNumber)).then(function (res) {
+        console.log(res.data);
+
+        _this.setState({
+          categories: res.data.data.data,
+          activePage: res.data.data.current_page,
+          itemsCountPerPage: res.data.data.per_page,
+          totalItemsCount: res.data.data.total
+        });
+      })["catch"](function (err) {
+        console.log('Error => ', err);
+      });
+    };
+
+    _this.flashSuccess = function (message) {
+      _this.setState({
+        alert_success: message
+      });
+
+      setTimeout(function () {
+        _this.setState({
+          alert_success: ''
+        });
+      }, 2000);
+    };
+
     _this.state = {
       categories: [],
-      validationErrors: []
+      validationErrors: [],
+      alert_success: '',
+      activePage: '',
+      itemsCountPerPage: '',
+      totalItemsCount: '',
+      pageRangeDisplayed: ''
     };
     return _this;
   }
@@ -73727,8 +74006,12 @@ function (_Component) {
         className: "col-md-8 offset-2"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CategoryList__WEBPACK_IMPORTED_MODULE_1__["default"], {
         categories: this.state.categories,
+        pagination: this.state,
         changeStatus: this.changeStatus,
-        deleteCategory: this.deleteCategory
+        deleteCategory: this.deleteCategory,
+        paginate: this.paginate,
+        success: this.state.alert_success,
+        flashSuccess: this.flashSuccess
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_AddCategory__WEBPACK_IMPORTED_MODULE_2__["default"], {
         addCategory: this.addCategory,
         errors: this.state.validationErrors
@@ -73897,6 +74180,30 @@ function (_Component) {
 
 /***/ }),
 
+/***/ "./resources/js/components/layout/Success.js":
+/*!***************************************************!*\
+  !*** ./resources/js/components/layout/Success.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var Success = function Success(_ref) {
+  var message = _ref.message;
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, message && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+    className: "alert alert-success"
+  }, message));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Success);
+
+/***/ }),
+
 /***/ "./resources/js/components/web/About.js":
 /*!**********************************************!*\
   !*** ./resources/js/components/web/About.js ***!
@@ -73942,7 +74249,19 @@ function (_Component) {
   _createClass(About, [{
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "About page");
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "About us"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "What is Lorem Ipsum?"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Where does it come from?"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham."));
     }
   }]);
 
@@ -73998,7 +74317,19 @@ function (_Component) {
   _createClass(Contact, [{
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Contact us page");
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Contact us now !"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "What is Lorem Ipsum?"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Where does it come from?"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham."));
     }
   }]);
 
@@ -74006,6 +74337,36 @@ function (_Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (Contact);
+
+/***/ }),
+
+/***/ "./resources/js/components/web/Error404.js":
+/*!*************************************************!*\
+  !*** ./resources/js/components/web/Error404.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+
+
+
+var Error404 = function Error404() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "alert alert-danger text-center"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "404 Page Not Found..."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "btn btn-primary"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
+    to: "",
+    className: "alert-link text-light"
+  }, "Take me Home")));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Error404);
 
 /***/ }),
 
@@ -74054,7 +74415,19 @@ function (_Component) {
   _createClass(Home, [{
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Home page loaded");
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "What is Lorem Ipsum?"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Where does it come from?"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          textAlign: 'justify'
+        }
+      }, "The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham."));
     }
   }]);
 

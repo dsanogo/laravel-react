@@ -30,10 +30,10 @@ class AddCategory extends Component {
 
     displayErrors = () => {
         return this.props.errors.length ? (
-            <div className="alert alert-danger">
+            <div>
                 {
                     this.props.errors.map(error => {
-                        return (<p key={error}>
+                        return (<p key={error} className="alert alert-danger">
                             {error}
                         </p>)
                     })

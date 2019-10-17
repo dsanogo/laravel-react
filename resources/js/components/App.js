@@ -8,6 +8,7 @@ import About from './web/About';
 import Contact from './web/Contact';
 import Category from './categories/Index';
 import Editcategory from './categories/Editcategory';
+import Error404 from './web/Error404';
 
 export default class App extends Component {
     render() {
@@ -23,6 +24,7 @@ export default class App extends Component {
                                 <Route path='/categories/:id/edit' component={Editcategory}/>
                                 <Route path='/about' component={About}/>
                                 <Route path='/contact-us' component={Contact}/>
+                                <Route path='/*' component={Error404}/>
                             </Switch>
                         </div>
                     </div>

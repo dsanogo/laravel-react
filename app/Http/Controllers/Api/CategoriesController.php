@@ -17,7 +17,7 @@ class CategoriesController extends Controller
     public function index()
     {
         // get all categories
-        $categories = Category::orderBy('id', 'desc')->get();
+        $categories = Category::orderBy('id', 'desc')->paginate(4);
         return response()->json(['status' => 'success', 'data' => $categories], 200);
     }
 
@@ -88,9 +88,16 @@ class CategoriesController extends Controller
     public function update(Request $request, Category $category)
     {
         try {
-            $category->update([
-                'active' => !$category->active
-            ]);
+            
+            if(isset($request->name)){
+                $category->update([
+                    'name' => $request->name
+                ]);
+            }else {
+                $category->update([
+                    'active' => !$category->active
+                ]);    
+            }
             return response()->json(['status' => 'success', 'category' => $category], 200);
         } catch (\Exception $ex) {
             return response()->json(['status' => 'error', 'message' => $ex->getMessage()], 200);
@@ -111,15 +118,6 @@ class CategoriesController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['status' => 'error', 'message' => $ex->getMessage()], 200);
         }
-    }
-
-    public function updayeName(Request $request, Category $category)
-    {
-        $category->update([
-            'name' => $request->name
-        ]);
-
-        return response()->json(['status' => 'success', 'message' => 'updated'], 200);
     }
 
     private function validateRequest($request)

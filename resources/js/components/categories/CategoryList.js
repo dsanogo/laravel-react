@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import Pagination from "react-js-pagination";
+import Success from '../layout/Success';
+
 class CategoryList extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      activePage: this.props.pagination.activePage ? this.props.pagination.activePage : 1
+    }
+  }
+  
+  handlePageChange = (pageNumber) => {
+    console.log(`Active page is now ${pageNumber}`);
+    this.props.paginate(pageNumber);
+  }
 
     render() {
       const {categories} = this.props;
+      const {activePage, itemsCountPerPage, totalItemsCount} = this.props.pagination;
         return (
             <div>
                 <h4>Categories list</h4>
+                {this.props.success && <Success message={this.props.success}/>}
                 <table className="table">
                   <thead className="thead-dark">
                     <tr style={{textAlign: 'center'}}>
@@ -64,6 +81,16 @@ class CategoryList extends Component {
                     }
                   </tbody>
               </table>
+              <div className="d-flex justify-content-center">
+                <Pagination 
+                    activePage={activePage}
+                    itemsCountPerPage={itemsCountPerPage}
+                    totalItemsCount={totalItemsCount}
+                    onChange={this.handlePageChange}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                  />
+              </div>
             </div>
         )
     }
