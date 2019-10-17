@@ -18,7 +18,8 @@ use Illuminate\Http\Request;
 // });
 
 
-Route::get('categories', 'Api\CategoriesController@index')->name('categories.name');
+Route::get('categories', 'Api\CategoriesController@index')->name('categories.paginate');
+Route::get('all-categories', 'Api\CategoriesController@all')->name('categories.all');
 Route::post('categories', 'Api\CategoriesController@store')->name('categories.store');
 Route::get('categories/{category}/edit', 'Api\CategoriesController@edit')->name('category.edit');
 Route::patch('categories/{category}', 'Api\CategoriesController@update')->name('category.update');

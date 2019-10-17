@@ -13,7 +13,8 @@ class Category extends Component {
             activePage: '',
             itemsCountPerPage: '',
             totalItemsCount: '',
-            pageRangeDisplayed: ''
+            pageRangeDisplayed: '',
+            allCategories: []
         }
     }
 
@@ -23,6 +24,16 @@ class Category extends Component {
 
     getCategories = () => {
         const url = 'http://localhost:8000/api/categories';
+        const all = 'http://localhost:8000/api/all-categories';
+
+        axios.get(all).then(res => {
+            this.setState({
+                allCategories: res.data.data
+            });
+        }).catch(err => {
+            console.log('Error in fetching all categories => ', err);
+        })
+
         axios.get(url).then(res => {
             this.setState({
                 categories: res.data.data.data,
@@ -48,8 +59,8 @@ class Category extends Component {
                 validationErrors: []
             });
             if(err.response){
-const {errors} = err.response.data;
-            this.flashErrors(errors);
+                const {errors} = err.response.data;
+                this.flashErrors(errors);
             }
             
         })
@@ -104,6 +115,22 @@ const {errors} = err.response.data;
         })
     }
 
+    searchCategory = (name) => {
+        if(name !== ''){
+            const categories = this.state.allCategories.filter(category => {
+                console.log(name)
+                return category.name.toLowerCase().includes(name.toLowerCase());
+            })
+
+            this.setState({
+                categories: categories
+            })
+
+        }else {
+            this.getCategories();
+        }
+    }
+
     flashSuccess = (message) => {
         this.setState({
             alert_success: message
@@ -127,6 +154,7 @@ const {errors} = err.response.data;
                     paginate={this.paginate}
                     success={this.state.alert_success}
                     flashSuccess={this.flashSuccess}
+                    search={this.searchCategory}
                     />
                 <AddCategory addCategory={this.addCategory}
                             errors={this.state.validationErrors}/>

@@ -22,7 +22,19 @@ class CategoryList extends Component {
         return (
             <div>
                 <h4>Categories list</h4>
+                <div>
+                  <div className="col-md-4 float-md-right">
+                      <div className="form-group">
+                        <label htmlFor="search">Searc Category</label>
+                        <input type="text" className="form-control" id="search"
+                              onChange={(e) => this.props.search(e.target.value)}
+                        />
+                      </div>
+                  </div>  
+                </div>
+                
                 {this.props.success && <Success message={this.props.success}/>}
+                
                 <table className="table">
                   <thead className="thead-dark">
                     <tr style={{textAlign: 'center'}}>

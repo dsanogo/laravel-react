@@ -73621,7 +73621,20 @@ function (_Component) {
           activePage = _this$props$paginatio.activePage,
           itemsCountPerPage = _this$props$paginatio.itemsCountPerPage,
           totalItemsCount = _this$props$paginatio.totalItemsCount;
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Categories list"), this.props.success && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layout_Success__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Categories list"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-md-4 float-md-right"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "search"
+      }, "Searc Category"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control",
+        id: "search",
+        onChange: function onChange(e) {
+          return _this2.props.search(e.target.value);
+        }
+      })))), this.props.success && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layout_Success__WEBPACK_IMPORTED_MODULE_3__["default"], {
         message: this.props.success
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
         className: "table"
@@ -73891,6 +73904,14 @@ function (_Component) {
 
     _this.getCategories = function () {
       var url = 'http://localhost:8000/api/categories';
+      var all = 'http://localhost:8000/api/all-categories';
+      axios.get(all).then(function (res) {
+        _this.setState({
+          allCategories: res.data.data
+        });
+      })["catch"](function (err) {
+        console.log('Error in fetching all categories => ', err);
+      });
       axios.get(url).then(function (res) {
         _this.setState({
           categories: res.data.data.data,
@@ -73974,6 +73995,21 @@ function (_Component) {
       });
     };
 
+    _this.searchCategory = function (name) {
+      if (name !== '') {
+        var categories = _this.state.allCategories.filter(function (category) {
+          console.log(name);
+          return category.name.toLowerCase().includes(name.toLowerCase());
+        });
+
+        _this.setState({
+          categories: categories
+        });
+      } else {
+        _this.getCategories();
+      }
+    };
+
     _this.flashSuccess = function (message) {
       _this.setState({
         alert_success: message
@@ -73993,7 +74029,8 @@ function (_Component) {
       activePage: '',
       itemsCountPerPage: '',
       totalItemsCount: '',
-      pageRangeDisplayed: ''
+      pageRangeDisplayed: '',
+      allCategories: []
     };
     return _this;
   }
@@ -74010,7 +74047,8 @@ function (_Component) {
         deleteCategory: this.deleteCategory,
         paginate: this.paginate,
         success: this.state.alert_success,
-        flashSuccess: this.flashSuccess
+        flashSuccess: this.flashSuccess,
+        search: this.searchCategory
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_AddCategory__WEBPACK_IMPORTED_MODULE_2__["default"], {
         addCategory: this.addCategory,
         errors: this.state.validationErrors
@@ -74194,7 +74232,9 @@ __webpack_require__.r(__webpack_exports__);
 
 var Success = function Success(_ref) {
   var message = _ref.message;
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, message && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-6"
+  }, message && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     className: "alert alert-success"
   }, message));
 };

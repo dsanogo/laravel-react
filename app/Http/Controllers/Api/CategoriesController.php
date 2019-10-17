@@ -22,6 +22,18 @@ class CategoriesController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function all()
+    {
+        // get all categories
+        $categories = Category::all();
+        return response()->json(['status' => 'success', 'data' => $categories], 200);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

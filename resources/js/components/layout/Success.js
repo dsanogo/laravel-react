@@ -2,7 +2,7 @@ import React from 'react'
 
 const Success = ({message}) => {
     return (
-        <div>
+        <div className="col-md-6">
             {
                 message && (
                     <p className="alert alert-success">
